@@ -1,0 +1,30 @@
+{% extends "register_layout.html" %}
+
+{% block body %}
+				<dir class="form-group">
+					{{ form.about.label(class="form-control-label") }}
+					{% if form.about.errors %}
+						{{ form.about(class="form-control form-control-lg is-invalid")}}
+						<div class="invalid-feedback">
+							{% for error in form.about.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.about(class="form-control form-control-lg")}}
+					{% endif %}
+				</dir>
+				<dir class="form-group">
+					{{ form.skills.label(class="form-control-label") }}
+					{% if form.skills.errors %}
+						{{ form.skills(class="form-control form-control-lg is-invalid")}}
+						<div class="invalid-feedback">
+							{% for error in form.skills.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.skills(class="form-control form-control-lg")}}
+					{% endif %}
+				</dir>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+
+{%block content%}
+	<div class="content-section">
+		<form method="POST", action="">
+			{{ form.hidden_tag() }}
+			<nav>
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">What are you?</legend>
+				<a class="nav-item nav-link" href="{{ url_for('register_investor') }}">{{ form.investor }}</a>
+			<div class="form-group">
+				<a class="nav-item nav-link" href="{{ url_for('register_founder') }}">{{ form.founder }}</a>
+			</div>
+			</fieldset>
+			</nav>
+		</form>
+	</div>
+	<div class="border-top pt-3">
+		<small class="text-muted">
+			Already Have An Account? <a class="ml-2" href="{{ url_for('login')  }}">Log In</a>
+		</small>
+	</div>
+{% endblock%}
