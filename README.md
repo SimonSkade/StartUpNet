@@ -10,28 +10,28 @@ Open a terminal
 
 Clone the github repository:
 
-´´´
+```
 $ git clone https://github.com/SimonSkade/StartUpNet.git
-´´´
+```
 
 or if you perfer ssh:
 
-´´´
+```
 $ git clone git@github.com:SimonSkade/StartUpNet.git
-´´´
+```
 
-´´´
+```
 $ cd StartUpNet
 
 $ pip install -r requirements.txt
 $ python run.py
-´´´
+```
 
 or (depending on system)
 
-´´´
+```
 python3 run.py
-´´´
+```
 
 On linux you can now open a browser window and type in the address:
 
