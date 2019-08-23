@@ -1,7 +1,7 @@
 from startupnet import app, db, bcrypt
 from flask import render_template, flash, redirect, url_for, request
 from startupnet.models import User, Post, Investor, Founder
-from startupnet.forms import RegistrationInvestorForm, RegistrationFounderForm, RegisterChooseForm, LoginForm, UpdateAccountForm, PostForm
+from startupnet.forms import RegistrationInvestorForm, RegistrationFounderForm, RegisterChooseForm, LoginForm, UpdateAccountForm, PostForm, UpdateInvestorAccountForm, UpdateFounderAccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
@@ -41,10 +41,10 @@ def register_investor():
 	form = RegistrationInvestorForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-		investor = Investor(username=form.username.data, email=form.email.data, password=hashed_password, offers=form.offers.data, interests=form.interests.data)
+		investor = Investor(username=form.username.data, email=form.email.data, password=hashed_password, usertype="Investor", offers=form.offers.data, interests=form.interests.data)
 		db.session.add(investor)
 		db.session.commit()
-		user = User.query.filter_by(email=form.email.data).first()
+		user = Investor.query.filter_by(email=form.email.data).first()
 		login_user(user)
 		flash(f"Investor Account created for {form.username.data}!", "success")
 		flash("You were logged in automatically", "success")
@@ -58,10 +58,10 @@ def register_founder():
 	form = RegistrationFounderForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-		founder = Founder(username=form.username.data, email=form.email.data, password=hashed_password, about=form.about.data, skills=form.skills.data)
+		founder = Founder(username=form.username.data, email=form.email.data, password=hashed_password, usertype="Founder", about=form.about.data, skills=form.skills.data)
 		db.session.add(founder)
 		db.session.commit()
-		user = User.query.filter_by(email=form.email.data).first()
+		user = Founder.query.filter_by(email=form.email.data).first()
 		login_user(user)
 		flash(f"Founder Account created for {form.username.data}!", "success")
 		flash("You were logged in automatically", "success")
@@ -77,6 +77,10 @@ def login():
 	form = LoginForm()
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()
+		if user.usertype == "Investor":
+			user = Investor.query.filter_by(email=form.email.data).first()
+		elif user.usertype == "Founder":
+			user = Founder.query.filter_by(email=form.email.data).first()
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user, remember=form.remember.data)
 			next_page = request.args.get("next")
@@ -106,7 +110,10 @@ def save_picture(form_picture):
 @app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-	form = UpdateAccountForm()
+	if current_user.usertype == "Investor":
+		form = UpdateInvestorAccountForm()
+	elif current_user.usertype == "Founder":
+		form = UpdateFounderAccountForm()
 	if form.validate_on_submit():
 		if form.picture.data:
 			picture_file = save_picture(form.picture.data)
@@ -119,6 +126,16 @@ def account():
 	elif request.method == "GET":
 		form.username.data = current_user.username
 		form.email.data = current_user.email
+		"""
+		if current_user.usertype == "Investor":
+			form.offers.data = current_user.offers
+			form.interests.data = current_user.interests
+		elif current_user.usertype == "Founder":
+			form.about.data = current_user.about
+			form.skills.data = current_user.skills
+		"""
+
+
 	image_file = url_for("static", filename="profile_pics/" + current_user.image_file)
 	return render_template("account.html", title="Account", image_file=image_file, form=form)
 

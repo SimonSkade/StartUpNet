@@ -67,7 +67,13 @@ class UpdateAccountForm(FlaskForm):
 			if user:
 				raise ValidationError("The email is taken. Please choose another one.")
 
+class UpdateInvestorAccountForm(UpdateAccountForm):
+	offers = StringField("My Offers")
+	interests = StringField("My Interests")
 
+class UpdateFounderAccountForm(UpdateAccountForm):
+	about = StringField("About Me")
+	skills = StringField("My Skills")
 
 class LoginForm(FlaskForm):
 	email = StringField("Email", validators=[DataRequired(), Email()])

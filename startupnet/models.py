@@ -10,21 +10,22 @@ class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	email = db.Column(db.String(120), unique=True, nullable=False)
-	image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+	image_file = db.Column(db.String(20), nullable=False, default='static/profile_pics/default.jpg')
 	password = db.Column(db.String(60), nullable=False)
+	usertype = db.Column(db.String(20), nullable=False, default="User")
 	posts = db.relationship("Post", backref='author', lazy=True)
 
 	def __repr__(self):
 		return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
-class Investor(User):
+class Investor(User, db.Model, UserMixin):
 	offers = db.Column(db.String(500))
 	interests = db.Column(db.String(500))
 
 	def __repr__(self):
 		return f"Investor('{self.username}', '{self.email}', '{self.image_file}')"
 
-class Founder(User):
+class Founder(User, db.Model, UserMixin):
 	about = db.Column(db.String(500))
 	skills = db.Column(db.String(500))
 	
